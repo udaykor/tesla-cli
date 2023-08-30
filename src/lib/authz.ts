@@ -1,40 +1,12 @@
 import { TESLA_AUTHZ_URL}  from './constants';
-import { Client, type QuerySuccess, fql } from "fauna";
+import * as dotenv from "dotenv";
 
-type AccessToken = {
-  accessToken: string;
-  refreshToken: string;
-}
-
-const client = new Client();
-
-const accessId = process.env.ACCESS_ID || '';
+dotenv.config();
 
 
-export const getCurrentToken = async () => {
-  const client = new Client();
-  const query = fql`access.byId(${accessId.toString()})`
-  const res: void | QuerySuccess<AccessToken> = await client.query<AccessToken>(query).catch(err => console.log('Fetching current token failed'));
-  if (res) {
-    return res.data;
-  } else {
-    return { accessToken: undefined, refreshToken: undefined }
-  }
-}; 
-
-export const updateCurrentTokens = async (data: AccessToken) => {
-  const client = new Client();
-  const query = fql`access.byId(${accessId.toString()})!.replace(${data})`;
-  const res: QuerySuccess<AccessToken> = await client.query<AccessToken>(query);
-  // Return empty
-  return;
-}
-
-
-// Get new tokens from Tesla
+// Get access to a new Token
 export const requestNewToken = async () => {
-  const { accessToken, refreshToken } = await getCurrentToken()
-  
+  const refreshToken = process.env.REFRSH_TOKEN;
   const authRefreshBody = JSON.stringify({
     "grant_type": "refresh_token",
     "client_id": "ownerapi",
@@ -55,6 +27,6 @@ export const requestNewToken = async () => {
     accessToken: response.access_token, 
     refreshToken: response.refresh_token
   };
-  await updateCurrentTokens(data);
+  console.log("Got Tokens");
   return data;
 };

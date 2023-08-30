@@ -20,7 +20,7 @@
     "@oclif/core": "^2",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^3.3.0",
-    "fauna": "^1.0.1"
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.26.10",

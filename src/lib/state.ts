@@ -1,152 +1,24 @@
-import  TESLA_API_BASE_URL from './constants';
-import { getCurrentToken } from './authz';
+import  TESLA_API_BASE_URL, { sleep } from './constants';
+import { requestNewToken } from '../lib/authz';
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 
 
-export const getVehicles = async () => {
-  const { accessToken } = await getCurrentToken();
-  console.log("get vehicles");
+export const getFirstVehicleId = async () => {
+  const tokenData = await requestNewToken();
+  await sleep(2000);
+  console.log("Getting the first Vehicle ID");
   const res = await fetch(`${TESLA_API_BASE_URL}`, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      'Authorization': `Bearer ${tokenData.accessToken}`
     },
     method: 'GET'
   })
-  console.log('get vehicles ', res.status);
+  console.log('Status: ', res.status);
   const data = await res.json();
-  return data;
+  return data.response[0].id;
 };
 
-export const getVehicle = async (id:string, uri?:string, access_token?:string)=>  {  
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-export const getVehicleData = async (id:string, access_token?:string, uri?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = uri? uri: `${TESLA_API_BASE_URL}${id}/vehicle_data`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-export const getVehicleState = async (id:string, access_token?:string, uri?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  // Tainted input for the API call ges here.
-  const url = uri? uri: `${TESLA_API_BASE_URL}${id}/data_request/vehicle_state`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-export const getServiceData = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/service_data`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-
-export const getMobileEnabled = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/mobile_enabled`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-// Getting a 404
-export const getChargeState = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/data_request/charge_state`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-// This is a 404 - Aug 23
-export const getClimateState = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/data_request/climate_state`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
-
-
-export const getDriveState = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/data_request/drive_state`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-
-  const data = await res.json();
-  return data;
-};
-
-
-export const getGuiSettings = async (id:string, access_token?:string)=>  {
-  const { accessToken } = await getCurrentToken();
-  const url = `${TESLA_API_BASE_URL}${id}/data_request/gui_settings`
-  const res = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    },
-    method: 'GET'
-  })
-  const data = await res.json();
-  return data;
-};
